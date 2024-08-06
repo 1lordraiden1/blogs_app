@@ -1,6 +1,10 @@
 <?php
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +18,27 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('home');
+    //$myPosts = Post::where('user_id', auth()->id())->get();
+    $myPosts = [];
+    if (auth()->check()) {
+        $myPosts = auth()->user()->usersCoolPosts()->latest()->get(); 
+    }
+    $posts = Post::all();
+    return view('home', ['myPosts' => $myPosts, 'posts' => $posts]);
 });
 
-Route::post('/register', function () {
-    return "hi this is register";
-});
+Route::post('/register', [UserController::class, 'register']);
+
+Route::post('/logout', [UserController::class, 'logout']);
+
+Route::post('/login', [UserController::class, 'login']);
+
+// Blog routs
+
+Route::post('/create-post', [PostController::class, 'createPost']);
+
+Route::get('/edit-post/{post}', [PostController::class, 'showEditScreen']);
+
+Route::post('/edit-post/{post}', [PostController::class, 'actuallyUpdatePost']);
+
+Route::delete('/delete-post/{post}', [PostController::class, 'deletePost']);
