@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,11 +21,17 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     //$myPosts = Post::where('user_id', auth()->id())->get();
     $myPosts = [];
+    $eachPostComments = [];
+
     if (auth()->check()) {
-        $myPosts = auth()->user()->usersCoolPosts()->latest()->get(); 
+        $myPosts = auth()->user()->usersCoolPosts()->latest()->get();
     }
-    $posts = Post::all();
-    return view('home', ['myPosts' => $myPosts, 'posts' => $posts]);
+    $posts = Post::with('postCoolComments')->get();
+    /* 
+        foreach ($posts as $post) {
+            $eachPostComments = $eachPostComments->merge($post->postCoolComments()->latest()->get());
+        } */
+    return view('home', ['myPosts' => $myPosts, 'posts' => $posts,]);
 });
 
 Route::post('/register', [UserController::class, 'register']);
@@ -42,3 +49,7 @@ Route::get('/edit-post/{post}', [PostController::class, 'showEditScreen']);
 Route::post('/edit-post/{post}', [PostController::class, 'actuallyUpdatePost']);
 
 Route::delete('/delete-post/{post}', [PostController::class, 'deletePost']);
+
+// Comment routs
+
+Route::post('/create-comment/{post}', [CommentController::class, 'createComment']);

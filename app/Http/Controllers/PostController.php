@@ -22,11 +22,11 @@ class PostController extends Controller
             return redirect('/');
         }
 
-        $post->title = $request->title;
+        //$post->title = $request->title;
         //Rule::unique('test')->ignore($post->id, 'post_id')
 
         $fields = $request->validate([
-            'title' => "required|unique:test,title,$post->id,post_id",
+            'title' => "required|unique:posts,title,{$post->title}",
             'body' => 'required',
         ]);
 

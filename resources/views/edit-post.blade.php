@@ -10,17 +10,22 @@
 
 <body>
     <h1>Edit Post</h1>
-    <form action="/edit-post/{{ $post->post_id }}" method="post">
+    <form action="/edit-post/{{ $post->id }}" method="post">
         @csrf
 
-        <input type="text" name="title" value="{{ old('title') == null ? $post->title : old('title') }}"
-            class="@error('title') is-invalid @enderror">
-        <textarea name="body" id="" cols="30" rows="5"> {{ $post->body }} </textarea>
+        <input type="text" name="title" value="{{ old('title') == null ? $post->title : old('title') }}">
+        <textarea name="body" id="" cols="30" rows="5"> {{ old('body') == null ? $post->body : old('body') }} </textarea>
         <button>Save Changes</button>
     </form>
-    @error('title')
-        <div style="background-color: red">{{ $message }}</div>
-    @enderror
+    @if ($errors->any())
+        <div class="alert alert-danger" style="background-color: red ; text-color: white">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
 </body>
 
