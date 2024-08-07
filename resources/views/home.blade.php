@@ -20,7 +20,7 @@
             <h2>Create a New post</h2>
             <form action="/create-post" method="post">
                 @csrf
-                <input type="text" name="title" placeholder="post title">
+                <input type="text" name="title" placeholder="post about">
                 <textarea name="body" id="" cols="20" rows="5" placeholder="body content..."></textarea>
                 <button>Save Post</button>
             </form>
@@ -60,11 +60,24 @@
             <h2>All Posts</h2>
             @foreach ($posts as $post)
                 <div style="background-color: gray; padding: 10px; margin: 10px;">
-                    <h3> {{ $post['title'] }} </h3>
-                    <h5> {{ $post['body'] }} </h5>
+                    <li> {{ $post['user']['name'] }} </li>
+
+                    <ul>
+                        <li> {{ $post['body'] }} </li>
+                    </ul>
+
                 </div>
-                
+                @if ($post->user_id === auth()->user()->id)
+                    <p><a href="/edit-post/{{ $post->id }}">Edit</a></p>
+                    <form action="/delete-post/{{ $post->id }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button>Delete</button>
+                    </form>
+                @endif 
+
                 {{-- Enter Comment Form --}}
+
                 <h4>Comment</h4>
                 <form action="/create-comment/ {{ $post->id }} " method="post">
                     @csrf
@@ -72,15 +85,27 @@
                     <button>Comment</button>
                 </form>
 
-                <div style="border: 3px solid black">
-                    <h4>Comments</h4>
-                    @foreach ($post->postCoolComments as $comment)
-                        <div style="background-color: gray; padding: 10px; margin: 10px;">
-                            <h3> <strong> {{ $comment['user']['name'] }} </strong> : {{ $comment['content'] }} </h3>
-
-                        </div>
-                    @endforeach
-                </div>
+                {{-- Show Comments Section --}}
+                @if ($post->postCoolComments->first() === null)
+                    <h2>No Comments added for this post</h2>
+                @else
+                    <div style="border: 3px solid black">
+                        <h4>Comments</h4>
+                        @foreach ($post->postCoolComments as $comment)
+                            <div style="background-color: gray; padding: 10px; margin: 10px;">
+                                <h3> <strong> {{ $comment['user']['name'] }} </strong> : {{ $comment['content'] }} </h3>
+                            </div>
+                            @if ($comment->user_id === auth()->user()->id)
+                                <p><a href="/edit-comment/{{ $comment->id }}">Edit Comment</a></p>
+                                <form action="/delete-comment/{{ $comment->id }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button>Delete Comment</button>
+                                </form>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
             @endforeach
 
         </div>

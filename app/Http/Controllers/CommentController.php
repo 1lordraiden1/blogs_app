@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    
     public function createComment(Request $request, Post $post)
     {
         $fields = $request->validate([

@@ -26,7 +26,7 @@ Route::get('/', function () {
     if (auth()->check()) {
         $myPosts = auth()->user()->usersCoolPosts()->latest()->get();
     }
-    $posts = Post::with('postCoolComments')->get();
+    $posts = Post::with('postCoolComments')->with('user')->latest()->get();
     /* 
         foreach ($posts as $post) {
             $eachPostComments = $eachPostComments->merge($post->postCoolComments()->latest()->get());
