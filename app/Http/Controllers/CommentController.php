@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+    public function deleteComment(Comment $comment)
+    {
+        if ($comment->user_id === auth()->user()->id || $comment->user_id === auth()->user()->id) {
+            $comment->delete();
+
+        }
+        return redirect('/');
+    }
     public function actuallyUpdateComment(Comment $comment, Request $request)
     {
         if ($comment->user_id !== auth()->user()->id && $comment->post()->get()->first()->user_id !== auth()->user()->id) {
