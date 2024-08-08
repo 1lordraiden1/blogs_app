@@ -53,3 +53,9 @@ Route::delete('/delete-post/{post}', [PostController::class, 'deletePost']);
 // Comment routs
 
 Route::post('/create-comment/{post}', [CommentController::class, 'createComment']);
+
+Route::get('/edit-comment/{comment}', [CommentController::class, 'showEditScreen']);
+
+Route::post('/edit-comment/{comment}', [CommentController::class, 'actuallyUpdateComment']);
+
+Route::delete('/delete-comment/{comment}', [CommentController::class, 'deleteComment']);

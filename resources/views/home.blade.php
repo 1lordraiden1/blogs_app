@@ -74,7 +74,7 @@
                         @method('DELETE')
                         <button>Delete</button>
                     </form>
-                @endif 
+                @endif
 
                 {{-- Enter Comment Form --}}
 
@@ -93,10 +93,13 @@
                         <h4>Comments</h4>
                         @foreach ($post->postCoolComments as $comment)
                             <div style="background-color: gray; padding: 10px; margin: 10px;">
-                                <h3> <strong> {{ $comment['user']['name'] }} </strong> : {{ $comment['content'] }} </h3>
+                                <h3> <strong> {{ $comment['user']['name'] }} </strong> :
+                                    {{ $comment['content'] }}
+                                </h3>
                             </div>
-                            @if ($comment->user_id === auth()->user()->id)
-                                <p><a href="/edit-comment/{{ $comment->id }}">Edit Comment</a></p>
+                            @if ($comment->user_id === auth()->user()->id || $post->user_id === auth()->user()->id)
+                                <p><a href="/edit-comment/{{ $comment->id }}">Edit
+                                        Comment</a></p>
                                 <form action="/delete-comment/{{ $comment->id }}" method="POST">
                                     @csrf
                                     @method('DELETE')
