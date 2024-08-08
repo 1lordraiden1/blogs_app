@@ -67,14 +67,15 @@
                     </ul>
 
                 </div>
-                @if ($post->user_id === auth()->user()->id)
-                    <p><a href="/edit-post/{{ $post->id }}">Edit</a></p>
-                    <form action="/delete-post/{{ $post->id }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button>Delete</button>
-                    </form>
-                @endif
+                {{--  @if ($post->isPostOwner()) --}}
+                <p><a href="/edit-post/{{ $post->id }}">Edit</a></p>
+                <form action="/delete-post/{{ $post->id }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button>Delete</button>
+
+                </form>
+                {{--   @endif --}}
 
                 {{-- Enter Comment Form --}}
 
@@ -97,15 +98,15 @@
                                     {{ $comment['content'] }}
                                 </h3>
                             </div>
-                            @if ($comment->user_id === auth()->user()->id || $post->user_id === auth()->user()->id)
-                                <p><a href="/edit-comment/{{ $comment->id }}">Edit
-                                        Comment</a></p>
-                                <form action="/delete-comment/{{ $comment->id }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button>Delete Comment</button>
-                                </form>
-                            @endif
+                            {{--  @if ($comment->isCommentOwner() || $comment->isPostOwner()) --}}
+                            <p><a href="/edit-comment/{{ $comment->id }}">Edit
+                                    Comment</a></p>
+                            <form action="/delete-comment/{{ $comment->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button>Delete Comment</button>
+                            </form>
+                            {{--   @endif --}}
                         @endforeach
                     </div>
                 @endif

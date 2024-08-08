@@ -27,5 +27,22 @@ class Comment extends Model
         return $this->belongsTo(Post::class, 'post_id');
     }
 
+    public function isCommentOwner()
+    {
+        if ($this->user_id === auth()->user()->id) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isPostOwner()
+    {
+        if ($this->post()->get()->first()->user_id === auth()->user()->id) {
+            return true;
+        }
+        return false;
+    }
+
+
 
 }

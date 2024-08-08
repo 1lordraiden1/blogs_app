@@ -8,9 +8,10 @@ use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
-    public function deletePost(Post $post)
+    public function deletePost(Post $post, Request $request)
     {
-        if (auth()->user()->id === $post->user_id) {
+        $request->merge(['post' => $post]);
+        if ($post->isPostOwner()) {
             $post->delete();
 
         }
@@ -18,7 +19,9 @@ class PostController extends Controller
     }
     public function actuallyUpdatePost(Post $post, Request $request)
     {
-        if (auth()->user()->id !== $post->user_id) {
+        $request->merge(['post' => $post]);
+
+        if (!$post->isPostOwner()) {
             return redirect('/');
         }
 
@@ -39,9 +42,11 @@ class PostController extends Controller
         return redirect('/');
 
     }
-    public function showEditScreen(Post $post)
+    public function showEditScreen(Post $post, Request $request)
     {
-        if ($post->user_id !== auth()->user()->id) {
+        $request->merge(['post' => $post]);
+
+        if (!$post->isPostOwner()) {
             return redirect('/');
         }
         return view("edit-post", ['post' => $post]);

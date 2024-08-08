@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Middleware\EnsureUserIsValidForPost;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,18 +45,21 @@ Route::post('/login', [UserController::class, 'login']);
 
 Route::post('/create-post', [PostController::class, 'createPost']);
 
-Route::get('/edit-post/{post}', [PostController::class, 'showEditScreen']);
 
-Route::post('/edit-post/{post}', [PostController::class, 'actuallyUpdatePost']);
 
-Route::delete('/delete-post/{post}', [PostController::class, 'deletePost']);
+Route::get('/edit-post/{post}', [PostController::class, 'showEditScreen'])->middleware('post');
+
+
+Route::post('/edit-post/{post}', [PostController::class, 'actuallyUpdatePost'])->middleware('post');
+
+Route::delete('/delete-post/{post}', [PostController::class, 'deletePost'])->middleware('post');
 
 // Comment routs
 
 Route::post('/create-comment/{post}', [CommentController::class, 'createComment']);
 
-Route::get('/edit-comment/{comment}', [CommentController::class, 'showEditScreen']);
+Route::get('/edit-comment/{comment}', [CommentController::class, 'showEditScreen'])->middleware('comment');
 
-Route::post('/edit-comment/{comment}', [CommentController::class, 'actuallyUpdateComment']);
+Route::post('/edit-comment/{comment}', [CommentController::class, 'actuallyUpdateComment'])->middleware('comment');
 
-Route::delete('/delete-comment/{comment}', [CommentController::class, 'deleteComment']);
+Route::delete('/delete-comment/{comment}', [CommentController::class, 'deleteComment'])->middleware('comment');

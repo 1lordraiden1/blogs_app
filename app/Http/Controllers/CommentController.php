@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function deleteComment(Comment $comment)
+    public function deleteComment(Comment $comment, Request $request)
     {
-        if ($comment->user_id === auth()->user()->id || $comment->user_id === auth()->user()->id) {
+        $request->merge(['comment' => $comment]);
+
+        if ($comment->isCommentOwner() || $comment->isPostOwner()) {
             $comment->delete();
 
         }
@@ -18,7 +20,9 @@ class CommentController extends Controller
     }
     public function actuallyUpdateComment(Comment $comment, Request $request)
     {
-        if ($comment->user_id !== auth()->user()->id && $comment->post()->get()->first()->user_id !== auth()->user()->id) {
+        $request->merge(['comment' => $comment]);
+
+        if (!$comment->isCommentOwner() && !$comment->isPostOwner()) {
             return redirect('/');
         }
 
@@ -39,9 +43,11 @@ class CommentController extends Controller
 
     }
 
-    public function showEditScreen(Comment $comment)
+    public function showEditScreen(Comment $comment, Request $request)
     {
-        if ($comment->user_id !== auth()->user()->id && $comment->post()->get()->first()->user_id !== auth()->user()->id) {
+        $request->merge(['comment' => $comment]);
+
+        if (!$comment->isCommentOwner() && !$comment->isPostOwner()) {
             return redirect('/');
         }
         return view("edit-comment", ['comment' => $comment]);

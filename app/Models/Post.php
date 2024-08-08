@@ -26,4 +26,12 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function isPostOwner()
+    {
+        if ($this->user_id == auth()->user()->id) {
+            return true;
+        }
+        return false;
+    }
+
 }
